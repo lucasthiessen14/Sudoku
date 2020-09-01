@@ -1,6 +1,3 @@
-#Importing Libraries required for puzzle_solver
-import pygame
-
 #Finds all the boxes in the Sudoku with a value of zero
 def empty_box(board):
     for y in range(len(board)):
