@@ -132,6 +132,25 @@ def game_end():
                 if event.key == pygame.K_SPACE:
                     game_intro()
 
+def draw_grid():
+    for i in range(0,81):
+        pos = pos_list[i]
+        pos1 = positions[i]
+        val = num_list[i]
+        if val == 0:
+            val = " "
+        if pos1 in zero_list:
+            if pos == [select_pos[0]+15, select_pos[1]]:
+                if keys != 0:
+                    num_list[i] = keys
+        if pos1 in zero_list:
+            text_color3 = (blue)
+        else:
+            text_color3 = black
+        val = str(val)
+        dnum = myFont.render(val, 1, text_color3)
+        screen.blit(dnum, (pos))
+
 def gameloop(grid):
 
     grid1 = grid
@@ -146,6 +165,7 @@ def gameloop(grid):
     keys = 0
     play_list = []
     end = 0
+    incorrect = False
     pygame.key.set_repeat(60,60)
 
     #draws the box selector
@@ -198,7 +218,6 @@ def gameloop(grid):
             dnum = myFont.render(val, 1, text_color3)
             screen.blit(dnum, (pos))
 
-
     while not game_over:
 
         #Creates game backround
@@ -219,15 +238,19 @@ def gameloop(grid):
                 b = select_pos[1]
 
                 if event.key == pygame.K_UP:
+                    incorrect = False
                     if select_pos[1] > 5:
                         b -= 60
                 elif event.key == pygame.K_DOWN:
+                    incorrect = False
                     if select_pos[1] < 485:
                         b += 60
                 elif event.key == pygame.K_RIGHT:
+                    incorrect = False
                     if select_pos[0] < 485:
                         a += 60
                 elif event.key == pygame.K_LEFT:
+                    incorrect = False
                     if select_pos[0] > 5:
                         a -= 60
 
@@ -235,26 +258,36 @@ def gameloop(grid):
                 k = keys
 
                 if event.key == pygame.K_1:
+                    incorrect = False
                     k = 1
                 if event.key == pygame.K_2:
+                    incorrect = False
                     k = 2
                 if event.key == pygame.K_3:
+                    incorrect = False
                     k = 3
                 if event.key == pygame.K_4:
+                    incorrect = False
                     k = 4
                 if event.key == pygame.K_5:
+                    incorrect = False
                     k = 5
                 if event.key == pygame.K_6:
+                    incorrect = False
                     k = 6
                 if event.key == pygame.K_7:
+                    incorrect = False
                     k = 7
                 if event.key == pygame.K_8:
+                    incorrect = False
                     k = 8
                 if event.key == pygame.K_9:
+                    incorrect = False
                     k = 9
                 keys = k
 
                 if event.key == pygame.K_a:
+                    incorrect = False
                     num_list.clear()
                     solution(grid1)
                     num_val(grid1)
@@ -262,6 +295,11 @@ def gameloop(grid):
                     end += 1
 
                 if event.key == pygame.K_ESCAPE:
+                    incorrect = False
+                    for i in zero_list:
+                        a = i[0]
+                        b = i[1]
+                        grid1[a][b] = 0
                     game_intro()
 
                 elif event.key == pygame.K_RETURN:
@@ -277,9 +315,13 @@ def gameloop(grid):
                         else:
                             end = 0
                             game_intro()
-
                     else:
+                        if incorrect == True:
+                            incorrect = False
+                        else:
+                            incorrect = True
                         play_list.clear()
+
 
         #Calls the functions created
         draw_border()
@@ -288,8 +330,13 @@ def gameloop(grid):
         draw_grid()
 
         keys = 0
-        text = myFont.render("Press Enter to Check Answer", 1, (white))
-        screen.blit(text, (40, 550))
+        if incorrect == True:
+            text = myFont.render("Press Enter to Continue", 1, (white))
+            screen.blit(text, (80, 550))
+            screen.blit(myFont2.render("Try Again", 1, (red)), (120, 200))
+        else:
+            text = myFont.render("Press Enter to Check Answer", 1, (white))
+            screen.blit(text, (40, 550))
         pygame.display.update()
 
 #Calls the main game functions
